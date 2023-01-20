@@ -1,3 +1,7 @@
 # DUTY MANAGER 
-![image](./assets/png/logo.png)
-### A simple but useful application for organizing your tasks, with this application, set your small goals during the day, week, month and even year to achieve your dreams.
+<p align="center">
+  <img src="./assets/png/logo.png" width="350" title="hover text">
+</p>
+
+ ### A simple but useful application for organizing your tasks, with this application, set your small goals during the day, week, month and even year to achieve your dreams.
+
