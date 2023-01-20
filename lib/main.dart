@@ -1,11 +1,19 @@
-import 'package:duty_manager/src/controller/cubit/sign_in_cubit.dart';
-import 'package:duty_manager/src/screens/screen_home.dart';
-import 'package:duty_manager/src/screens/screen_sign_in.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'src/controller/cubit/sign_in_cubit.dart';
+import 'src/screens/screen_home.dart';
+import 'src/screens/screen_sign_in.dart';
+
 void main() {
-  runApp(const DutyManager());
+  runApp(DevicePreview(
+    enabled: !kReleaseMode,
+    builder: (context) {
+      return const DutyManager();
+    },
+  ));
 }
 
 class DutyManager extends StatelessWidget {
@@ -13,17 +21,32 @@ class DutyManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SignInCubit, SignInState>(
-      builder: (context, state) {
-        final homePage =
-            state.isSignIn ? const SignInScreen() : const HomeScreen();
-        return buildApplication(homePage);
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<SignInCubit>(
+          create: (context) => SignInCubit(),
+        )
+      ],
+      child: BlocBuilder<SignInCubit, SignInState>(
+        builder: (context, state) {
+          final homePage =
+              state.isSignIn ? const HomeScreen() : const SignInScreen();
+          return buildApplication(context, homePage);
+        },
+      ),
     );
   }
 
-  MaterialApp buildApplication(Widget homePage, [SignInState? state]) {
+  MaterialApp buildApplication(BuildContext context, Widget homePage,
+      [SignInState? state]) {
     return MaterialApp(
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(fontFamily: 'Lato'),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       home: homePage,
     );
   }
