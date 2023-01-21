@@ -6,7 +6,18 @@ class CTextFromField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: TextFormField(),
+      height: 50,
+      width: 500,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: TextFormField(
+        decoration: InputDecoration(
+          label: const Text("Name / ID"),
+          hintText: "Enter Your Name or @ID",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+      ),
     );
   }
 }

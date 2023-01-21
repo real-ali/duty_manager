@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:duty_manager/application_colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,8 +45,8 @@ class DutyManager extends StatelessWidget {
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'Lato'),
-      darkTheme: ThemeData.dark(),
+      theme: ThemeData(fontFamily: 'Lato').copyWith(primaryColor: lightColor1),
+      darkTheme: ThemeData.dark().copyWith(primaryColor: darkColor1),
       themeMode: ThemeMode.system,
       home: homePage,
     );

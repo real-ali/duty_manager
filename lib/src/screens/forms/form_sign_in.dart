@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../components/text_form_field.dart';
 
 class SignInForm extends StatelessWidget {
-  final bool isSignIn;
-  const SignInForm(this.isSignIn, {super.key});
+  final Function()? onSubmit;
+  const SignInForm({
+    super.key,
+    this.onSubmit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,18 +16,31 @@ class SignInForm extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const CTextFromField(),
-        _submitButton(),
+        _submitButton(context),
       ],
     ));
   }
 
-  _submitButton() {
-    return TextButton(
+  _submitButton(BuildContext context) {
+    final theme = Theme.of(context);
+    return ElevatedButton(
       style: TextButton.styleFrom(
-        padding: const EdgeInsets.all(20),
+        minimumSize: const Size(500, 50),
+        backgroundColor: theme.primaryColor,
+        padding: const EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
       ),
-      onPressed: () {},
-      child: const Text("Start Application"),
+      onPressed: onSubmit,
+      child: Text(
+        "Start Application",
+        style: theme.textTheme.button
+            ?.copyWith(
+              color: theme.scaffoldBackgroundColor,
+            )
+            .copyWith(fontWeight: FontWeight.bold),
+      ),
     );
   }
 }
