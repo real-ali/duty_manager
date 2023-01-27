@@ -2,7 +2,7 @@ class User {
   final String id;
   final String name;
   final String email;
-  final String phoneNumber;
+  final String? phoneNumber;
 
   const User({
     required this.id,
@@ -15,7 +15,7 @@ class User {
     this.id = '',
     this.name = '',
     this.email = '',
-    this.phoneNumber = '',
+    this.phoneNumber,
   });
 
   User copyWith({
@@ -34,7 +34,6 @@ class User {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{
-      'id': id,
       'name': name,
       'email': email,
       'phoneNumber': phoneNumber,

@@ -1,6 +1,6 @@
 part of 'sign_in_cubit.dart';
 
-class SignInState {
+class AuthState {
   final bool isLacal;
   final bool hasError;
   final bool isLoading;
@@ -9,7 +9,7 @@ class SignInState {
   final String error;
   final User user;
 
-  SignInState({
+  AuthState({
     required this.isLacal,
     required this.hasError,
     required this.isLoading,
@@ -18,7 +18,7 @@ class SignInState {
     required this.user,
     required this.isSignIn,
   });
-  SignInState.init({
+  AuthState.init({
     this.isLacal = false,
     this.hasError = false,
     this.isLoading = false,
@@ -28,8 +28,28 @@ class SignInState {
     this.isSignIn = false,
   });
 
-  SignInState errorState(String err) {
-    return SignInState(
+  AuthState copyWith({
+    bool? isLacal,
+    bool? hasError,
+    bool? isLoading,
+    bool? isSuccess,
+    bool? isSignIn,
+    String? error,
+    User? user,
+  }) {
+    return AuthState(
+      isLacal: isLacal ?? this.isLacal,
+      hasError: hasError ?? this.hasError,
+      isLoading: isLoading ?? this.isLoading,
+      isSuccess: isSuccess ?? this.isSuccess,
+      error: error ?? this.error,
+      user: user ?? this.user,
+      isSignIn: isSignIn ?? this.isSignIn,
+    );
+  }
+
+  AuthState errorState(String err) {
+    return AuthState(
       isLacal: isLacal,
       hasError: true,
       isLoading: false,
@@ -40,20 +60,20 @@ class SignInState {
     );
   }
 
-  SignInState successState(User user, [bool? isSignIn, bool? isLacal]) {
-    return SignInState(
-      isLacal: isLacal ?? this.isLacal,
+  AuthState successState({bool? isSignedIn}) {
+    return AuthState(
+      isLacal: isLacal,
       hasError: false,
       isLoading: false,
       isSuccess: true,
       error: '',
       user: user,
-      isSignIn: isSignIn ?? this.isSignIn,
+      isSignIn: isSignedIn ?? isSignIn,
     );
   }
 
-  SignInState loadingState() {
-    return SignInState(
+  AuthState loadingState() {
+    return AuthState(
       isLacal: isLacal,
       hasError: false,
       isLoading: true,

@@ -1,5 +1,5 @@
 import '../models/user.dart';
 
 abstract class Options {
-  Future signIn(User user);
+  Future<bool> signIn(User user);
 }

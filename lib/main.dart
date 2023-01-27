@@ -1,12 +1,10 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:duty_manager/application_colors.dart';
+import 'package:duty_manager/app_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'src/controller/cubit/sign_in_cubit.dart';
-import 'src/screens/screen_home.dart';
-import 'src/screens/screen_sign_in.dart';
 
 void main() {
   runApp(DevicePreview(
@@ -24,31 +22,49 @@ class DutyManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SignInCubit>(
-          create: (context) => SignInCubit(),
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(),
         )
       ],
-      child: BlocBuilder<SignInCubit, SignInState>(
+      child: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
-          final homePage =
-              state.isSignIn ? const HomeScreen() : const SignInScreen();
-          return buildApplication(context, homePage);
+          return _buildApplication(context);
         },
       ),
     );
   }
 
-  MaterialApp buildApplication(BuildContext context, Widget homePage,
-      [SignInState? state]) {
-    return MaterialApp(
-      useInheritedMediaQuery: true,
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'Lato').copyWith(primaryColor: lightColor1),
-      darkTheme: ThemeData.dark().copyWith(primaryColor: darkColor1),
-      themeMode: ThemeMode.system,
-      home: homePage,
+  Widget _buildApplication(BuildContext context) {
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        final router = AppRouter.build(
+          initialLocation: state.isLacal ? '/tasks' : '/',
+          isSignedIn: state.isSignIn,
+          routes: AppRoutes.routes,
+          loginPaths: AppRoutes.loginPaths,
+          publicPaths: AppRoutes.publicPaths,
+        );
+
+        return MaterialApp.router(
+          routeInformationProvider: router.routeInformationProvider,
+          routeInformationParser: router.routeInformationParser,
+          routerDelegate: router.routerDelegate,
+          useInheritedMediaQuery: true,
+          locale: DevicePreview.locale(context),
+          builder: DevicePreview.appBuilder,
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+              brightness: Brightness.light,
+              fontFamily: 'Lato',
+              primaryColor: const Color(0xFF5184DB)),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            fontFamily: 'Lato',
+            primaryColor: const Color(0xFFD1CE10),
+          ),
+          themeMode: ThemeMode.system,
+        );
+      },
     );
   }
 }
