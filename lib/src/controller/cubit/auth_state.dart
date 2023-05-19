@@ -1,15 +1,15 @@
-part of 'sign_in_cubit.dart';
+import '../../models/user.dart';
 
-class AuthState {
+class AuthenticationState {
   final bool isLacal;
   final bool hasError;
   final bool isLoading;
   final bool isSuccess;
   final bool isSignIn;
   final String error;
-  final User user;
+  final AppUser user;
 
-  AuthState({
+  AuthenticationState({
     required this.isLacal,
     required this.hasError,
     required this.isLoading,
@@ -18,26 +18,26 @@ class AuthState {
     required this.user,
     required this.isSignIn,
   });
-  AuthState.init({
+  AuthenticationState.init({
     this.isLacal = false,
     this.hasError = false,
     this.isLoading = false,
     this.isSuccess = false,
     this.error = '',
-    this.user = const User.init(),
+    this.user = const AppUser.init(),
     this.isSignIn = false,
   });
 
-  AuthState copyWith({
+  AuthenticationState copyWith({
     bool? isLacal,
     bool? hasError,
     bool? isLoading,
     bool? isSuccess,
     bool? isSignIn,
     String? error,
-    User? user,
+    AppUser? user,
   }) {
-    return AuthState(
+    return AuthenticationState(
       isLacal: isLacal ?? this.isLacal,
       hasError: hasError ?? this.hasError,
       isLoading: isLoading ?? this.isLoading,
@@ -48,38 +48,38 @@ class AuthState {
     );
   }
 
-  AuthState errorState(String err) {
-    return AuthState(
+  AuthenticationState errorState(String err) {
+    return AuthenticationState(
       isLacal: isLacal,
       hasError: true,
       isLoading: false,
       isSuccess: false,
       error: err,
-      user: const User.init(),
+      user: user,
       isSignIn: false,
     );
   }
 
-  AuthState successState({bool? isSignedIn}) {
-    return AuthState(
+  AuthenticationState successState({bool? isSignedIn, AppUser? user}) {
+    return AuthenticationState(
       isLacal: isLacal,
       hasError: false,
       isLoading: false,
       isSuccess: true,
       error: '',
-      user: user,
+      user: user ?? this.user,
       isSignIn: isSignedIn ?? isSignIn,
     );
   }
 
-  AuthState loadingState() {
-    return AuthState(
+  AuthenticationState loadingState() {
+    return AuthenticationState(
       isLacal: isLacal,
       hasError: false,
       isLoading: true,
       isSuccess: false,
       error: '',
-      user: const User.init(),
+      user: user,
       isSignIn: false,
     );
   }

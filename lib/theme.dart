@@ -48,13 +48,13 @@ abstract class AppTheme {
         fontWeight: FontWeight.w500,
       ),
     ).copyWith(
-      caption: const TextStyle(
+      bodySmall: const TextStyle(
         letterSpacing: -0.1,
         fontSize: 14,
         color: Color(0xFFEEEAEA),
         fontWeight: FontWeight.w300,
       ),
-      button: const TextStyle(
+      labelLarge: const TextStyle(
         fontSize: 16,
         color: Color(0xFF131212),
         fontWeight: FontWeight.w900,

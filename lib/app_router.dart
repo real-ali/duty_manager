@@ -1,7 +1,7 @@
+import 'package:duty_manager/src/screens/screen_about_app.dart';
+import 'package:duty_manager/src/screens/screen_enter_system.dart';
 import 'package:duty_manager/src/screens/screen_home.dart';
 import 'package:duty_manager/src/screens/screen_privacy_policies.dart';
-import 'package:duty_manager/src/screens/screen_sign_in.dart';
-import 'package:duty_manager/src/screens/screen_task.dart';
 import 'package:duty_manager/src/screens/screen_terms_of_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +14,7 @@ abstract class AppRouter {
     List<GoRoute> routes = const [],
     String initialLocation = '/',
     String? Function(GoRouterState)? redirect,
+    List<String> paths = const [],
     List<String> publicPaths = const [],
     List<String> loginPaths = const [],
   }) {
@@ -23,13 +24,19 @@ abstract class AppRouter {
         ...routes,
       ],
       redirect: (_, state) {
-        if (redirect != null) return redirect(state);
-        bool isPublic = _publicPaths(publicPaths).any((e) => e == state.subloc);
-        if (isPublic) return null;
-        bool isLogin = _loginPaths(loginPaths).any((e) => e == state.subloc);
-        if (!isSignedIn) return isLogin ? null : '/signIn';
+        bool isOnPath = _paths(paths).any((e) => e == state.subloc);
+        bool isOnPublicPath =
+            _publicPaths(publicPaths).any((e) => e == state.subloc);
 
-        if (isSignedIn && isLogin) return '/';
+        bool isOnLoginPath =
+            _loginPaths(loginPaths).any((e) => e == state.subloc);
+        if (redirect != null) return redirect(state);
+        if (isOnPublicPath) return null;
+        if (!isSignedIn && isOnPublicPath) return null;
+        if (isSignedIn && !isOnLoginPath) return '/';
+        if (!isSignedIn && isOnLoginPath) return '/e';
+        if (!isSignedIn && isOnPath) return null;
+
         return null;
       },
       errorBuilder: (context, r) => Scaffold(
@@ -43,9 +50,15 @@ abstract class AppRouter {
     );
   }
 
+  static List<String> _paths(List<String> paths) {
+    return [
+      '/e',
+      ...paths,
+    ];
+  }
+
   static List<String> _loginPaths(List<String> loginPaths) {
     return [
-      '/signIn',
       ...loginPaths,
     ];
   }
@@ -62,8 +75,8 @@ abstract class AppRoutes {
 
   static final List<GoRoute> routes = <GoRoute>[
     GoRoute(
-      path: SignInScreen.path,
-      builder: (_, __) => const SignInScreen(),
+      path: ScreenEnterSystem.path,
+      builder: (_, __) => const ScreenEnterSystem(),
     ),
     GoRoute(
       path: ScreenPrivacyPolicies.path,
@@ -78,15 +91,22 @@ abstract class AppRoutes {
       builder: (_, __) => const HomeScreen(),
     ),
     GoRoute(
-      path: TaskScreen.path,
-      builder: (_, __) => const TaskScreen(),
-    )
+      path: ScreenAboutApp.path,
+      builder: (_, __) => const ScreenAboutApp(),
+    ),
   ];
 
-  static const List<String> loginPaths = [];
+  static const List<String> paths = [
+    ScreenEnterSystem.path,
+  ];
+
+  static const List<String> loginPaths = [
+    HomeScreen.path,
+  ];
 
   static const List<String> publicPaths = [
     ScreenPrivacyPolicies.path,
     ScreenTermsOfService.path,
+    ScreenAboutApp.path,
   ];
 }

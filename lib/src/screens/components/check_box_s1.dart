@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class S1CheckBox extends StatelessWidget {
   final String text;
+  final String message;
   final Function(bool?)? onChanged;
   final bool? value;
   final double? width;
@@ -12,7 +13,8 @@ class S1CheckBox extends StatelessWidget {
       this.onChanged,
       this.value,
       this.width,
-      this.height});
+      this.height,
+      required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +39,9 @@ class S1CheckBox extends StatelessWidget {
               children: [
                 Text(text),
                 Text(
-                  "local mode you are not able to safe youe data",
+                  message,
                   softWrap: true,
-                  style: theme.textTheme.caption,
+                  style: theme.textTheme.bodySmall,
                 )
               ],
             ),
