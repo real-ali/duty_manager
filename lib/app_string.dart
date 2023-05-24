@@ -19,3 +19,12 @@ const String signUpMessage1 =
     "I am glad that you have decided to take a step to manage your work.";
 const String signUpMessage2 =
     " To create an account, please enter the requested information.";
+
+const String signUpPasswordFieldHint = "Enter Your Acount Password";
+const String signUpPasswordFieldLabel = "Acount Password";
+
+const String signUpUsernameFieldHint = "Enter your unique username";
+const String signUpUsernameFieldLabel = "Username/ID";
+
+const String signUpEmailFieldHint = "Enter your Email Address";
+const String signUpEmailFieldLabel = "Email";

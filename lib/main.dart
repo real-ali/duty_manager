@@ -1,42 +1,38 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:duty_manager/app_router.dart';
 import 'package:duty_manager/src/logic/supabase/logic_supabase_authentication.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kooza_flutter/kooza_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'firebase_options.dart';
 import 'src/controller/cubit/auth_cubit.dart';
 import 'src/controller/cubit/auth_state.dart';
-import 'src/logic/hive/logic_hive_authentication.dart';
+import 'src/logic/koozeh/logic_koozeh_authentication.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   final localDb = await Kooza.getInstance("duty_manager");
 
   runApp(DevicePreview(
     enabled: !kReleaseMode,
     builder: (context) {
-      return DutyManager(
+      return DutyManagerProviders(
         boxCollection: localDb,
       );
     },
   ));
 }
 
-class DutyManager extends StatelessWidget {
+class DutyManagerProviders extends StatelessWidget {
   final Kooza boxCollection;
-  const DutyManager({super.key, required this.boxCollection});
-
-  void supabaseConfiguration() async {
-    await Supabase.initialize(
-      url: "https://pyioffutseemtyrvjzdp.supabase.co",
-      anonKey:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5aW9mZnV0c2VlbXR5cnZqemRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODQ0MDI4MDcsImV4cCI6MTk5OTk3ODgwN30.gKXIsuZL146UGEih9guvKK3QpoVWKSubSQIzPGzZlaE",
-    );
-  }
+  const DutyManagerProviders({super.key, required this.boxCollection});
 
   @override
   Widget build(BuildContext context) {
@@ -44,34 +40,37 @@ class DutyManager extends StatelessWidget {
       providers: [
         BlocProvider<AuthenticationBloc>(
           create: (context) => AuthenticationBloc(
-            options: LogicHiveAuthentication(boxCollection),
-            supabaseAuthentication: LogicSupabaseAuthentication(
-              supabaseConfiguration(),
-            ),
+            options: LogicKoozehAuthentication(boxCollection),
+            onlineOptions: LogicSupabaseAuthentication(
+                // supabaseConfiguration(),
+                ),
           ),
         ),
       ],
-      child: _buildApplication(context),
+      child: const DutyManager(),
     );
   }
+}
 
-  Widget _buildApplication(BuildContext context) {
+class DutyManager extends StatelessWidget {
+  const DutyManager({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (_, state) {
+      buildWhen: (previous, current) =>
+          previous.isSignedIn != current.isSignedIn,
+      builder: (context, state) {
         final router = AppRouter.build(
           initialLocation: '/',
-          isSignedIn: state.isSignIn,
+          isSignedIn: state.isSignedIn,
           routes: AppRoutes.routes,
           paths: AppRoutes.paths,
           loginPaths: AppRoutes.loginPaths,
           publicPaths: AppRoutes.publicPaths,
         );
-
         return MaterialApp.router(
-          routeInformationProvider: router.routeInformationProvider,
-          routeInformationParser: router.routeInformationParser,
-          routerDelegate: router.routerDelegate,
-          // useInheritedMediaQuery: true,
+          routerConfig: router,
           locale: DevicePreview.locale(context),
           builder: DevicePreview.appBuilder,
           debugShowCheckedModeBanner: false,

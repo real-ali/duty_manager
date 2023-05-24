@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1058628323887",
+    "project_id": "duty-manager-1994a",
+    "storage_bucket": "duty-manager-1994a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058628323887:android:001be40589d6703f61d4da",
+        "android_client_info": {
+          "package_name": "com.example.duty_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058628323887-e2j4r7nnkh0082j67ovogfitrshmceuk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD1eyMyQ9MJyC3zwAxC5AKDzAGMUUp8GY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1058628323887-e2j4r7nnkh0082j67ovogfitrshmceuk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

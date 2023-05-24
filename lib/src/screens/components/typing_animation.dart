@@ -1,87 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_markup_text/flutter_markup_text.dart';
+import 'package:vibration/vibration.dart';
 
-class TypingAnimation extends StatefulWidget {
+class AnimatedTypingText extends StatefulWidget {
   final String text;
-  final TextStyle? style;
-  final double pitch;
-  final double volume;
+  final TextStyle? textStyle;
+  final TextStyle? hyperTextStyle;
+  final List<Mark> marks;
+  final Duration typingSpeed;
+  final Duration pauseDuration;
+  final AnimatedTypingText? nextText;
 
-  const TypingAnimation({
+  const AnimatedTypingText({
     super.key,
     required this.text,
-    this.pitch = 1.0,
-    this.volume = 1.0,
-    this.style,
+    this.textStyle,
+    this.typingSpeed = const Duration(milliseconds: 80),
+    this.pauseDuration = const Duration(milliseconds: 500),
+    this.hyperTextStyle,
+    this.marks = const [],
+    this.nextText,
   });
 
   @override
-  createState() => _TypingAnimationState();
+  State<StatefulWidget> createState() {
+    return _AnimatedTypingTextState();
+  }
 }
 
-class _TypingAnimationState extends State<TypingAnimation>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late FlutterTts _tts;
+class _AnimatedTypingTextState extends State<AnimatedTypingText> {
+  String _animatedText = '';
 
-  String _typedText = '';
-  int _currentIndex = 0;
+  Widget nextText = const SizedBox();
 
   @override
   void initState() {
     super.initState();
-
-    _tts = FlutterTts();
-    _tts.setPitch(widget.pitch);
-    _tts.setVolume(widget.volume);
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: widget.text.length * 100),
-    );
-
-    _controller.addListener(_onAnimationUpdate);
-
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.removeListener(_onAnimationUpdate);
-    _controller.dispose();
-    _tts.stop();
-    super.dispose();
-  }
-
-  void _onAnimationUpdate() {
-    final index = (_controller.value * widget.text.length).floor();
-    if (index > _currentIndex) {
-      final soundChar = widget.text[_currentIndex];
-      _currentIndex = index;
-
-      setState(() {
-        _typedText = widget.text.substring(0, _currentIndex);
-      });
-
-      // generate the vibration
-      HapticFeedback.heavyImpact();
-
-      // speak the soundChar
-      _tts.speak(soundChar);
-    }
+    _startTypingAnimation();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Text(
-          _typedText,
-          style: widget.style,
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        MarkupText(
+          text: _animatedText,
+          textStyle: widget.textStyle,
+          marksStyle: widget.hyperTextStyle,
+          marks: widget.marks,
+        ),
+        nextText
+      ],
     );
+  }
+
+  void _startTypingAnimation() async {
+    for (int i = 0; i < widget.text.length; i++) {
+      await Future.delayed(widget.typingSpeed);
+      if (mounted) {
+        setState(() {
+          _animatedText = widget.text.substring(0, i + 1);
+        });
+        _vibrate();
+      }
+    }
+    setState(() {
+      nextText = widget.nextText ?? const SizedBox();
+    });
+  }
+
+  void _vibrate() async {
+    if (await Vibration.hasVibrator() == true) {
+      Vibration.vibrate(duration: 50);
+    }
   }
 }

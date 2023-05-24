@@ -1,5 +1,6 @@
 import 'package:duty_manager/src/screens/screen_about_app.dart';
 import 'package:duty_manager/src/screens/screen_enter_system.dart';
+import 'package:duty_manager/src/screens/screen_forgot_login_info.dart';
 import 'package:duty_manager/src/screens/screen_home.dart';
 import 'package:duty_manager/src/screens/screen_privacy_policies.dart';
 import 'package:duty_manager/src/screens/screen_terms_of_service.dart';
@@ -94,10 +95,19 @@ abstract class AppRoutes {
       path: ScreenAboutApp.path,
       builder: (_, __) => const ScreenAboutApp(),
     ),
+    GoRoute(
+      path: ScreenForgotLoginInfo.path,
+      builder: (_, __) => const ScreenForgotLoginInfo(),
+    ),
+    // GoRoute(
+    //   path: ScreenAuth.path,
+    //   builder: (_, __) => const ScreenAuth(),
+    // ),
   ];
 
   static const List<String> paths = [
     ScreenEnterSystem.path,
+    ScreenForgotLoginInfo.path,
   ];
 
   static const List<String> loginPaths = [

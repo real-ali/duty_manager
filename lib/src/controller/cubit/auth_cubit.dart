@@ -1,21 +1,22 @@
 import 'dart:async';
 
-import 'package:duty_manager/src/logic/supabase/logic_supabase_authentication.dart';
-import 'package:duty_manager/src/options/options_auth.dart';
+import 'package:duty_manager/src/options/local/local_options_auth.dart';
+import 'package:duty_manager/src/options/online/online_options_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 
+import '../../models/user.dart';
 import 'auth_state.dart';
 
 class AuthenticationBloc extends Cubit<AuthenticationState> {
-  final OptionsAuth _options;
-  final LogicSupabaseAuthentication _supabaseAuthentication;
+  final LocalOptionsAuth _options;
+  final OnlineOptionsAuth _onlineOptions;
   AuthenticationBloc({
-    required OptionsAuth options,
-    required LogicSupabaseAuthentication supabaseAuthentication,
+    required LocalOptionsAuth options,
+    required OnlineOptionsAuth onlineOptions,
   })  : _options = options,
-        _supabaseAuthentication = supabaseAuthentication,
+        _onlineOptions = onlineOptions,
         super(AuthenticationState.init()) {
+    fetchLocalSetting();
     fetchData();
   }
 
@@ -31,50 +32,93 @@ class AuthenticationBloc extends Cubit<AuthenticationState> {
     emit(state.copyWith(user: state.user.copyWith(name: name)));
   }
 
-  void setUserName(String? userName) {
-    emit(state.copyWith(user: state.user.copyWith(userName: userName)));
+  void setEmail(String? email) {
+    emit(state.copyWith(user: state.user.copyWith(email: email)));
   }
 
-  Future<bool> checkIfUserExist() async {
-    emit(state.loadingState());
-    return true;
+  void setUserName(String? userName) {
+    final user = state.user.copyWith(userName: userName);
+
+    emit(state.copyWith(user: user));
+  }
+
+  void signInWithGoogle() async {
+    try {
+      emit(state.fetchingState());
+      await _onlineOptions.signInWithGoogle();
+      emit(state.fetchedState());
+    } catch (e) {
+      emit(state.fetchingFaildState(err: '$e'));
+    }
+  }
+
+  void signInWithTwitter() async {
+    try {
+      emit(state.fetchingState());
+      await _onlineOptions.signInWithTwitter();
+      emit(state.fetchedState());
+    } catch (e) {
+      emit(state.fetchingFaildState(err: '$e'));
+    }
+  }
+
+  void signOut() async {
+    try {
+      emit(state.fetchingState());
+      await _onlineOptions.signOut();
+      emit(state.fetchedState());
+    } catch (e) {
+      emit(state.fetchingFaildState(err: '$e'));
+    }
   }
 
   void enterToSystem() async {
     try {
-      emit(state.loadingState());
-      final data = state.user.copyWith(id: const Uuid().v4());
-      await _options.enteringToSystem(data);
-      emit(state.successState());
+      emit(state.fetchingState());
+      final data = state.user;
+      await _options.enteringToSystem(data, state.isLocal);
+      emit(state.fetchedState());
     } catch (e) {
-      emit(state.errorState('$e'));
+      emit(state.fetchingFaildState(err: "$e"));
     }
   }
 
   void logout() async {
     try {
-      emit(state.loadingState());
+      emit(state.clearingState());
       await _options.clearAll();
-      emit(state.successState());
+      emit(state.clearedState());
     } catch (e) {
-      emit(state.errorState("An error occurred! Please try again."));
+      emit(state.clearingFaildState(
+          err: "An error occurred! Please try again."));
     }
   }
 
   StreamSubscription<Map<String, dynamic>?>? _streamSubscriptio;
-
   fetchData() async {
-    // _streamSubscriptio?.cancel();
-    _streamSubscriptio = _options.currentUserData().listen((event) {
-      if (event == null || event.isEmpty) {
-        emit(state.successState(isSignedIn: false));
-      } else {
-        emit(
-          state.successState(isSignedIn: true),
-        );
-      }
+    _streamSubscriptio?.cancel();
+    _streamSubscriptio = _options.fetchUserData().listen((event) {
+      emit(state.fetchingState());
+
+      final hasdata = event?['data'] != null;
+
+      emit(state.fetchedState().copyWith(
+            isSignedIn: hasdata,
+            user: AppUser.fromJson(event),
+          ));
     }, onError: (e) {
-      emit(state.errorState(e.toString()));
+      emit(state.fetchingFaildState(err: e));
+    });
+  }
+
+  fetchLocalSetting() async {
+    _streamSubscriptio?.cancel();
+    _streamSubscriptio = _options.fetchLocalSetting().listen((event) {
+      emit(state.fetchedState().copyWith(
+            isLacal: event['is_local'],
+          ));
+    }, onError: (e) {
+      emit(state.fetchingFaildState(err: e));
     });
   }
 

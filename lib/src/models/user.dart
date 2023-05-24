@@ -1,44 +1,39 @@
 class AppUser {
-  final String id;
   final String userName;
   final String name;
   final String email;
-  final String? phoneNumber;
+  final bool? isEmailVerified;
+
   final String password;
 
   const AppUser({
-    required this.id,
     required this.userName,
     required this.name,
     required this.password,
     required this.email,
-    required this.phoneNumber,
+    required this.isEmailVerified,
   });
 
   const AppUser.init({
-    this.id = '',
     this.name = '',
     this.password = '',
     this.userName = '',
     this.email = '',
-    this.phoneNumber,
+    this.isEmailVerified,
   });
 
-  AppUser copyWith({
-    String? id,
-    String? name,
-    String? userName,
-    String? email,
-    String? password,
-    String? phoneNumber,
-  }) {
+  AppUser copyWith(
+      {String? name,
+      String? userName,
+      String? email,
+      String? password,
+      bool? isEmailVerified}) {
     return AppUser(
-      id: id ?? this.id,
       name: name ?? this.name,
       userName: userName ?? this.userName,
       password: password ?? this.password,
       email: email ?? this.email,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
     );
   }
 
@@ -47,8 +42,6 @@ class AppUser {
       'name': name,
       'username': userName,
       'email': email,
-      'password': password,
-      'phone_number': phoneNumber,
     };
     map.removeWhere((key, value) => value == null);
     return map;
@@ -57,12 +50,11 @@ class AppUser {
   factory AppUser.fromJson(Map<String, dynamic>? json) {
     if (json == null) return const AppUser.init();
     return AppUser(
-      id: json['id'],
-      name: json['name'],
-      userName: json['username'],
-      email: json['email'],
-      password: json['password'],
-      phoneNumber: json['phone_number'],
+      name: json['name'] ?? '',
+      userName: json['username'] ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
+      isEmailVerified: json['isEmailVerified'] ?? false,
     );
   }
 }

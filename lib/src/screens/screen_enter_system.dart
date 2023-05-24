@@ -1,13 +1,13 @@
-import 'package:duty_manager/src/screens/components/hyper_link_text.dart';
-import 'package:duty_manager/src/screens/forms/form_system_entering.dart';
 import 'package:duty_manager/src/screens/screen_privacy_policies.dart';
 import 'package:duty_manager/src/screens/screen_terms_of_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markup_text/flutter_markup_text.dart';
 import 'package:go_router/go_router.dart';
 
 import '/app_png.dart' as png;
 import '/app_string.dart' as string;
 import '/constraints.dart' as size;
+import 'forms/form_entering_system.dart';
 
 class ScreenEnterSystem extends StatefulWidget {
   static const String path = '/e';
@@ -80,20 +80,20 @@ class _ScreenEnterSystemState extends State<ScreenEnterSystem> {
                     style: theme.textTheme.bodySmall,
                   ),
                 ),
-                const SystemEnteringForm(),
+                const FormEnteringSystem(),
                 Container(
                   //   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top: 40, bottom: 5),
-                  child: HyperLinkText(
-                    hyperTextStyle: TextStyle(color: theme.primaryColor),
+                  child: MarkupText(
+                    marksStyle: TextStyle(color: theme.primaryColor),
                     text:
                         "By starting the application, you agree to the @{terms of service} and @{privacy policies} .",
-                    hypers: [
-                      Hyper(
+                    marks: [
+                      Mark(
                         'terms of service',
                         () => context.push(ScreenTermsOfService.path),
                       ),
-                      Hyper(
+                      Mark(
                         'privacy policies',
                         () {
                           context.push(ScreenPrivacyPolicies.path);

@@ -11,7 +11,10 @@ class S1TextFromField extends StatelessWidget {
   final Function(String?)? onSaved;
   final Function(String?)? onChanged;
   final bool obscureText;
+  final TextInputType? keyboardType;
+  final Widget? suffixIcon;
   final EdgeInsetsGeometry? margin;
+  final TextInputAction? textInputAction;
   const S1TextFromField({
     super.key,
     this.label,
@@ -25,6 +28,9 @@ class S1TextFromField extends StatelessWidget {
     this.controller,
     this.obscureText = false,
     this.margin,
+    this.keyboardType,
+    this.textInputAction,
+    this.suffixIcon,
   });
 
   @override
@@ -34,16 +40,18 @@ class S1TextFromField extends StatelessWidget {
       width: width ?? 500,
       margin: margin ?? const EdgeInsets.only(top: 10),
       child: TextFormField(
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
         obscureText: obscureText,
         controller: controller,
         initialValue: initialValue,
         cursorColor: theme.primaryColor,
-        textInputAction: TextInputAction.route,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: validator,
         onSaved: onSaved,
         onChanged: onChanged,
         decoration: InputDecoration(
+          suffixIcon: suffixIcon,
           isDense: true,
           labelStyle: TextStyle(color: theme.primaryColor),
           focusedErrorBorder: OutlineInputBorder(

@@ -18,6 +18,12 @@ dependencies:
   supabase_flutter: ^1.9.2
   uuid: ^3.0.7
   flutter_tts: ^3.6.3
+  vibration: ^1.7.7
+  firebase_core: ^2.13.0
+  firebase_auth: ^4.6.1
+  google_sign_in: ^6.1.1
+  twitter_login: ^4.4.0
+  flutter_markup_text: ^0.0.2
 
 dev_dependencies:
   flutter_test:
