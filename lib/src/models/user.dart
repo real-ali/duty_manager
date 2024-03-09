@@ -1,47 +1,45 @@
-class AppUser {
-  final String userName;
-  final String name;
-  final String email;
-  final bool? isEmailVerified;
+import 'package:uuid/uuid.dart';
 
-  final String password;
+class AppUser {
+  final Uuid? id;
+  final String? name;
+  final String? email;
+  final String? phoneNumber;
 
   const AppUser({
-    required this.userName,
+    required this.id,
     required this.name,
-    required this.password,
     required this.email,
-    required this.isEmailVerified,
+    required this.phoneNumber,
   });
 
   const AppUser.init({
-    this.name = '',
-    this.password = '',
-    this.userName = '',
-    this.email = '',
-    this.isEmailVerified,
+    this.id,
+    this.name,
+    this.email,
+    this.phoneNumber,
   });
 
-  AppUser copyWith(
-      {String? name,
-      String? userName,
-      String? email,
-      String? password,
-      bool? isEmailVerified}) {
+  AppUser copyWith({
+    Uuid? id,
+    String? name,
+    String? email,
+    String? phoneNumber,
+  }) {
     return AppUser(
+      id: id ?? this.id,
       name: name ?? this.name,
-      userName: userName ?? this.userName,
-      password: password ?? this.password,
       email: email ?? this.email,
-      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
     );
   }
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{
+      'id': id,
       'name': name,
-      'username': userName,
       'email': email,
+      'phone_number': phoneNumber
     };
     map.removeWhere((key, value) => value == null);
     return map;
@@ -50,11 +48,10 @@ class AppUser {
   factory AppUser.fromJson(Map<String, dynamic>? json) {
     if (json == null) return const AppUser.init();
     return AppUser(
-      name: json['name'] ?? '',
-      userName: json['username'] ?? '',
-      email: json['email'] ?? '',
-      password: json['password'] ?? '',
-      isEmailVerified: json['isEmailVerified'] ?? false,
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      phoneNumber: json['phone_number'],
     );
   }
 }

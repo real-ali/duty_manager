@@ -1,0 +1,30 @@
+{
+  "app": {
+    "name": "Duty Manager",
+    "appVersion": "version 0.0.1"
+  },
+  "enterSystem": {
+    "title": "Entering the system",
+    "guidance": "Specify your ID with the @ prefix to log into the pre-created account Or to create a new account,just enter your NAME without any prefix",
+    "submitBtn": "Start App",
+    "textFieldHint": "Enter Your Name or @ID",
+    "textFieldLabel": "Name / ID",
+    "passwordFieldHint": "Enter Your Acount Password",
+    "passwordFieldLabel": "Acount Password",
+    "checkBoxText": "Local Mode",
+    "checkBoxMessage": "In local mode, you can use the application offline and your data will be saved in the device itself,and if you change the device, the previous data will be lost."
+  },
+  "signUp": {
+    "message": "Hello, ",
+    "messageNext": "I'm Your @{Duty Manager}.",
+    "message1": "I am glad that you have decided to take a step to manage your work.",
+    "message2": " To create an account, please enter the requested information.",
+
+    "passwordFieldHint": "Enter Your Acount Password",
+    "passwordFieldLabel": "Acount Password",
+    "usernameFieldHint": "Enter your unique username",
+    "usernameFieldLabel": "Username/ID",
+    "emailFieldHint": "Enter your Email Address",
+    "emailFieldLabel": "Email"
+  }
+}
