@@ -1,7 +1,5 @@
-import 'package:uuid/uuid.dart';
-
 class Note {
-  final Uuid? id;
+  final String? id;
   final String? content;
   final DateTime? creationDate;
   final DateTime? modifiedDate;
@@ -21,7 +19,7 @@ class Note {
   });
 
   Note copyWith({
-    Uuid? id,
+    String? id,
     String? content,
     DateTime? creationDate,
     DateTime? modifiedDate,

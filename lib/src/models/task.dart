@@ -1,8 +1,6 @@
-import 'package:uuid/uuid.dart';
-
 class Task {
-  final Uuid? id;
-  final Uuid? parentId;
+  final String? id;
+  final String? parentId;
   final String? title;
   final String? description;
   final DateTime? creationDate;
@@ -30,8 +28,8 @@ class Task {
   });
 
   Task copyWith({
-    Uuid? id,
-    Uuid? parentId,
+    String? id,
+    String? parentId,
     String? title,
     String? description,
     DateTime? creationDate,

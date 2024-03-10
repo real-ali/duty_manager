@@ -7,23 +7,37 @@ import 'package:uuid/uuid.dart';
 
 class LogicApp implements InterfaceApp {
   final Kooza _kooza;
-  // final SupabaseClient _supabaseClient;
+  final Uuid _uuid;
 
   LogicApp({
     required Kooza kooza,
-    // required SupabaseClient supabaseClient,
-  }) : _kooza = kooza;
-  // _supabaseClient = supabaseClient;
+    required Uuid uuid,
+  })  : _kooza = kooza,
+        _uuid = uuid;
+
+  final _noteCollection = "note";
+  final _taskCollection = "note";
 
   @override
-  Future<void> createNote(Note note) {
-    // TODO: implement createNote
-    throw UnimplementedError();
+  Future<void> createNote(Note note) async {
+    try {
+      final collection = _kooza.collection(_noteCollection);
+      final id = _uuid.v4();
+      final creationDate = DateTime.now();
+      final data = note.copyWith(
+        id: id,
+        creationDate: creationDate,
+      );
+      await collection.add(data.toMap(), docId: id);
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
   Future<void> createNotesBackup(List<Note> notes) async {
     final client = Supabase.instance.client;
+
     // TODO: implement createNotesBackup
     throw UnimplementedError();
   }
@@ -36,39 +50,87 @@ class LogicApp implements InterfaceApp {
   }
 
   @override
-  Future<void> createtask(Task task) {
-    // TODO: implement createtask
-    throw UnimplementedError();
+  Future<void> createtask(Task task) async {
+    try {
+      final collection = _kooza.collection(_taskCollection);
+      final id = _uuid.v4();
+      final creationDate = DateTime.now();
+      final data = task.copyWith(
+        id: id,
+        creationDate: creationDate,
+      );
+      await collection.add(data.toMap(), docId: id);
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> deleteNote(Uuid id) {
-    // TODO: implement deleteNote
-    throw UnimplementedError();
+  Future<void> deleteNote(String id) async {
+    try {
+      final collection = _kooza.collection(_noteCollection);
+      await collection.doc(id).delete();
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> deleteNotes([List<Uuid>? ids]) {
-    // TODO: implement deleteNotes
-    throw UnimplementedError();
+  Future<void> deleteNotes([List<String>? ids]) async {
+    if (ids == null) return;
+
+    try {
+      final collection = _kooza.collection(_noteCollection);
+      final data = await collection.get();
+      if (ids.length == data.docs.length) {
+        await collection.delete();
+        return;
+      }
+      ids.map((id) async {
+        await collection.doc(id).delete();
+      });
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> deleteTask(Uuid id) {
-    // TODO: implement deleteTask
-    throw UnimplementedError();
+  Future<void> deleteTask(String id) async {
+    try {
+      final collection = _kooza.collection(_taskCollection);
+      await collection.doc(id).delete();
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> deleteTasks([List<Uuid>? ids]) {
-    // TODO: implement deleteTasks
-    throw UnimplementedError();
+  Future<void> deleteTasks([List<String>? ids]) async {
+    if (ids == null) return;
+    try {
+      final collection = _kooza.collection(_taskCollection);
+      final data = await collection.get();
+      if (ids.length == data.docs.length) {
+        await collection.delete();
+        return;
+      }
+      ids.map((id) async {
+        await collection.doc(id).delete();
+      });
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
-  Stream<List<Task>> fetchNotes() {
-    // TODO: implement fetchNotes
-    throw UnimplementedError();
+  Stream<List<Note>> fetchNotes() async* {
+    try {
+      final collection = _kooza.collection(_noteCollection);
+      final list = await collection.snapshots().toList();
+      yield Note.listFromMaps(list);
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
@@ -79,9 +141,15 @@ class LogicApp implements InterfaceApp {
   }
 
   @override
-  Stream<List<Task>> fetchTasks() {
-    // TODO: implement fetchTasks
-    throw UnimplementedError();
+  Stream<List<Task>> fetchTasks() async* {
+    try {
+      final collection = _kooza.collection(_taskCollection);
+
+      final list = await collection.snapshots().toList();
+      yield Task.listFromMaps(list);
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
@@ -92,14 +160,26 @@ class LogicApp implements InterfaceApp {
   }
 
   @override
-  Future<void> modifyNote(Note note) {
-    // TODO: implement modifyNote
-    throw UnimplementedError();
+  Future<void> modifyNote(Note note) async {
+    try {
+      final modificationDate = DateTime.now();
+      final data = note.copyWith(modifiedDate: modificationDate);
+      final collection = _kooza.collection(_noteCollection);
+      await collection.doc(note.id!).set(data.toMap());
+    } catch (_) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> modifyTask(Task task) {
-    // TODO: implement modifyTask
-    throw UnimplementedError();
+  Future<void> modifyTask(Task task) async {
+    try {
+      final modificationDate = DateTime.now();
+      final data = task.copyWith(modifiedDate: modificationDate);
+      final collection = _kooza.collection(_taskCollection);
+      await collection.doc(task.id!).set(data.toMap());
+    } catch (_) {
+      rethrow;
+    }
   }
 }

@@ -1,7 +1,5 @@
-import 'package:uuid/uuid.dart';
-
 class AppUser {
-  final Uuid? id;
+  final String? id;
   final String? name;
   final String? email;
   final String? phoneNumber;
@@ -21,7 +19,7 @@ class AppUser {
   });
 
   AppUser copyWith({
-    Uuid? id,
+    String? id,
     String? name,
     String? email,
     String? phoneNumber,
