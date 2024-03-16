@@ -1,4 +1,5 @@
 import 'package:duty_manager/src/screens/screen_home.dart';
+import 'package:duty_manager/src/screens/screen_note.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,6 +34,14 @@ abstract class AppRoutes {
     GoRoute(
       path: ScreenHome.path,
       builder: (_, __) => const ScreenHome(),
+    ),
+    GoRoute(
+      path: ScreenNote.path,
+      builder: (_, __) => const ScreenNote(),
+    ),
+    GoRoute(
+      path: ScreenNote.path,
+      builder: (_, __) => const ScreenNote(),
     ),
   ];
 }
